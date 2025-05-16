@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@/hooks/useAuth";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
-import { uploadToCloudinary } from "../../../api/upload";
+import { uploadToCloudinary } from "../app/api/upload";
 import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
@@ -13,8 +13,9 @@ interface AlumniDashboardPageProps {
   };
 }
 
-export default function AlumniDashboardPage() {
-  const { id } = useParams();
+export default function AlumniDashboardPage({
+  params,
+}: AlumniDashboardPageProps) {
   const { user, loading } = useAuth("alumni");
   const router = useRouter();
 
