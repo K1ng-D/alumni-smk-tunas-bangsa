@@ -73,15 +73,6 @@ export default function AdminLoginPage() {
             Masuk
           </button>
         </form>
-        <p className="mt-6 text-center text-gray-600">
-          Belum punya akun?{" "}
-          <Link
-            href="/auth/admin-register"
-            className="text-teal-600 font-semibold hover:underline"
-          >
-            Register Admin
-          </Link>
-        </p>
       </div>
     </div>
   );

@@ -120,18 +120,68 @@ export default function AlumniDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-600 text-black p-8">
-      <header className="flex justify-between items-center mb-10">
-        <h1 className="text-4xl font-bold">Dashboard Alumni</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 transition rounded-lg px-5 py-2 font-semibold"
-        >
-          Logout
-        </button>
-      </header>
+    <div className="h-auto w-full  text-black ">
+      <div className="w-full h-auto p-5 bg-white justify-start flex  items-center ">
+        <div className="col-span-2 text-start">
+          <img
+            src="/assets/images/logoSMK.png"
+            alt="Foto Profil"
+            className="w-[150px] h-[150px]  mx-auto   border-white"
+          />
+        </div>
+        <div className="col-span-2 text-start flex flex-col justify-start items-start">
+          <div className="col-span-2 text-start">
+            <h1 className="text-3xl font-bold text-center text-black">
+              SMK NEGERI 1 KEDUNGWUNI
+            </h1>
+          </div>
+          <div className="col-span-2 text-start">
+            <h1 className="text-lg text-center font-bold text-black t">
+              Cerdas - Tangkas - Jujur - Berkualitas
+            </h1>
+          </div>
+        </div>
+      </div>
 
-      <main className="bg-white bg-opacity-20 rounded-2xl p-8 shadow-lg max-w-4xl mx-auto">
+      <div className="w-full h-auto p-8 bg-gradient-to-tr from-purple-600 via-indigo-600 to-blue-600 justify-end flex  items-end">
+        <nav className="">
+          <div className="max-w-7xl mx-auto px-4  flex justify-between items-center">
+            <ul className="flex space-x-4 text-white">
+              <li>
+                <button
+                  onClick={() =>
+                    handleNavigate(`/dashboard/alumni/${user?.uid}`)
+                  }
+                  className="text-white hover:text-gray-400"
+                >
+                  Dashboard
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() =>
+                    handleNavigate(`/dashboard/alumni/${user?.uid}/rekomendasi`)
+                  }
+                  className="text-white hover:text-gray-400"
+                >
+                  Rekomendasi
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="text-white hover:text-gray-400"
+                >
+                  Logout
+                </button>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <main className="bg-white p-8  w-full h-auto mx-auto">
+        <h1 className="text-4xl font-bold">Dashboard Alumni</h1>
         <h2 className="text-2xl font-semibold mb-4">
           Selamat datang, {alumniData.name}
         </h2>
@@ -139,12 +189,12 @@ export default function AlumniDashboardPage() {
 
         {!editMode ? (
           <>
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white bg-opacity-30 rounded-xl p-6">
-              <div className="col-span-2 text-center">
+            <section className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white bg-opacity-30  p-16">
+              <div className="col-span-2 text-center ">
                 <img
                   src={alumniData.imageUrl}
                   alt="Foto Profil"
-                  className="w-32 h-32 rounded-full object-cover mx-auto border-4 border-white"
+                  className="w-32 h-32 rounded-full  object-cover mx-auto border-4 shadow border-white"
                 />
               </div>
               <div>
@@ -248,16 +298,6 @@ export default function AlumniDashboardPage() {
           </>
         )}
       </main>
-      <div
-        onClick={() =>
-          router.push(`/dashboard/alumni/${user?.uid}/rekomendasi`)
-        }
-        className="bg-white max-w-4xl mx-auto bg-opacity-30 my-12 rounded-lg p-5 text-center cursor-pointer hover:bg-opacity-50 transition"
-      >
-        <h3 className="text-lg font-bold mb-2 text-black">
-          Klik Untuk ke Halaman Rekomendasi Pekerjaan Untuk Alumni
-        </h3>
-      </div>
     </div>
   );
 }
