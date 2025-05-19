@@ -3,7 +3,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useParams, useRouter } from "next/navigation";
 import { auth, db } from "@/lib/firebase";
-import { uploadToCloudinary } from "../../../api/upload";
+
 import { useEffect, useState } from "react";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
@@ -28,7 +28,6 @@ export default function AlumniDashboardPage() {
     pekerjaan: "",
     alamat: "",
     skills: "",
-    imageUrl: "",
   });
 
   useEffect(() => {
@@ -50,8 +49,7 @@ export default function AlumniDashboardPage() {
           !data.tahunLulus ||
           !data.pekerjaan ||
           !data.alamat ||
-          !data.skills ||
-          !data.imageUrl
+          !data.skills
         ) {
           // You can alert or warn user here instead of redirecting
           console.warn("Lengkapi semua data profil terlebih dahulu.");
@@ -65,7 +63,6 @@ export default function AlumniDashboardPage() {
           pekerjaan: data.pekerjaan || "",
           alamat: data.alamat || "",
           skills: data.skills || "",
-          imageUrl: data.imageUrl || "",
         });
       }
     };
@@ -88,20 +85,12 @@ export default function AlumniDashboardPage() {
     if (!user) return;
 
     try {
-      let imageUrl = alumniData?.imageUrl || "";
-
-      if (image) {
-        const uploadedImageUrl = await uploadToCloudinary(image);
-        if (!uploadedImageUrl) throw new Error("Gagal mengunggah gambar.");
-        imageUrl = uploadedImageUrl;
-      }
-
       const docRef = doc(db, "users", user.uid);
-      const updatedData = { ...formData, imageUrl };
+
+      const updatedData = { ...formData };
       await updateDoc(docRef, updatedData);
       setAlumniData(updatedData);
       setEditMode(false);
-      setImage(null);
     } catch (error) {
       console.error("Gagal update:", error);
     }
@@ -132,7 +121,7 @@ export default function AlumniDashboardPage() {
         <div className="col-span-2 text-start flex flex-col justify-start items-start">
           <div className="col-span-2 text-start">
             <h1 className="text-3xl font-bold text-center text-black">
-              SMK NEGERI 1 KEDUNGWUNI
+              SMK TUNAS BANGSA
             </h1>
           </div>
           <div className="col-span-2 text-start">
@@ -185,18 +174,13 @@ export default function AlumniDashboardPage() {
         <h2 className="text-2xl font-semibold mb-4">
           Selamat datang, {alumniData.name}
         </h2>
-        <p className="mb-6 text-black/80">Data profil kamu:</p>
+        <h1 className="mb-6 text-black/80 text-xl text-center py-8 font-bold">
+          Data profil kamu:
+        </h1>
 
         {!editMode ? (
           <>
             <section className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-white bg-opacity-30  p-16">
-              <div className="col-span-2 text-center ">
-                <img
-                  src={alumniData.imageUrl}
-                  alt="Foto Profil"
-                  className="w-32 h-32 rounded-full  object-cover mx-auto border-4 shadow border-white"
-                />
-              </div>
               <div>
                 <h3 className="font-bold">Email:</h3>
                 <p>{user?.email}</p>
@@ -268,15 +252,6 @@ export default function AlumniDashboardPage() {
                   value={formData.skills}
                   onChange={handleInputChange}
                   className="w-full p-2 rounded bg-white/80 mt-1"
-                />
-              </div>
-              <div>
-                <label className="block font-semibold">Foto Profil</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => setImage(e.target.files?.[0] || null)}
-                  className="mt-1 w-full"
                 />
               </div>
             </section>

@@ -12,7 +12,6 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { uploadToCloudinary } from "../../../../api/upload";
 
 interface AlumniData {
   id: string;
@@ -22,16 +21,15 @@ interface AlumniData {
   pekerjaan: string;
   alamat: string;
   skills: string;
-  imageUrl: string;
 }
 
 export default function InfoAlumniPage() {
-  const router = useRouter(); // inisialisasi useRouter
+  const router = useRouter();
 
   const [alumni, setAlumni] = useState<AlumniData[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Partial<AlumniData>>({});
-  const [imageFile, setImageFile] = useState<File | null>(null);
+
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
@@ -56,14 +54,6 @@ export default function InfoAlumniPage() {
     if (!form.name) return alert("Nama wajib diisi.");
 
     try {
-      let imageUrl = form.imageUrl || "";
-
-      if (imageFile) {
-        const uploadedImageUrl = await uploadToCloudinary(imageFile);
-        if (!uploadedImageUrl) throw new Error("Gagal mengunggah gambar.");
-        imageUrl = uploadedImageUrl;
-      }
-
       const docRef = doc(db, "users", form.id);
       await updateDoc(docRef, {
         name: form.name,
@@ -72,13 +62,12 @@ export default function InfoAlumniPage() {
         pekerjaan: form.pekerjaan || "",
         alamat: form.alamat || "",
         skills: form.skills || "",
-        imageUrl,
       });
 
       setShowForm(false);
       setForm({});
       setIsEditing(false);
-      setImageFile(null);
+
       fetchAlumni();
     } catch (error: any) {
       alert(error.message || "Terjadi kesalahan saat menyimpan data.");
@@ -87,7 +76,7 @@ export default function InfoAlumniPage() {
 
   const handleEdit = (item: AlumniData) => {
     setForm(item);
-    setImageFile(null);
+
     setIsEditing(true);
     setShowForm(true);
   };
@@ -118,7 +107,6 @@ export default function InfoAlumniPage() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-white bg-opacity-20">
-                <th className="p-2">Gambar</th>
                 <th className="p-2">Nama</th>
                 <th className="p-2">Jurusan</th>
                 <th className="p-2">Tahun Lulus</th>
@@ -134,19 +122,6 @@ export default function InfoAlumniPage() {
                   key={item.id}
                   className="hover:bg-gray-400 hover:bg-opacity-10"
                 >
-                  <td className="p-2">
-                    {item.imageUrl ? (
-                      <img
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="w-16 h-16 object-cover rounded"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 bg-gray-600 rounded flex items-center justify-center text-sm">
-                        No Image
-                      </div>
-                    )}
-                  </td>
                   <td className="p-2">{item.name}</td>
                   <td className="p-2">{item.jurusan}</td>
                   <td className="p-2">{item.tahunLulus}</td>
@@ -237,25 +212,12 @@ export default function InfoAlumniPage() {
               onChange={(e) => setForm({ ...form, skills: e.target.value })}
             />
 
-            <label className="block mb-2 font-semibold">Pilih Gambar</label>
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full mb-6"
-              onChange={(e) => {
-                if (e.target.files && e.target.files[0]) {
-                  setImageFile(e.target.files[0]);
-                }
-              }}
-            />
-
             <div className="flex justify-end space-x-3">
               <button
                 onClick={() => {
                   setShowForm(false);
                   setForm({});
                   setIsEditing(false);
-                  setImageFile(null);
                 }}
                 className="px-4 py-2 bg-gray-400 rounded hover:bg-gray-500 text-black"
               >
